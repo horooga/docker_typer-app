@@ -1,0 +1,20 @@
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="static/pikme.css">
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <title>Typer</title>
+</head>
+<body>
+    <center>
+        <h1>{{ username }}`s stats:</h1><br><br>
+        <h1>Right: {{ stats[0] }}, Incorrect: {{ stats[1] }}, Skipped: {{ stats[2] }}</h1>
+    </center>
+    <center>
+        <form action="/logout" method="post">
+            <button type="submit" style="font-family: medodica; font-size: xxx-large; color: white">Log out</button>
+        </form>
+        <form action="/type" method="post">
+            <button type="submit" style="font-family: medodica; font-size: xxx-large; color: white">Type</button>
+        </form>
+    </center>
+</body>
