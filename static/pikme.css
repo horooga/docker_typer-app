@@ -10,22 +10,32 @@
 body {
     font-family: "medodica";
     color: white;
-    background-color: #aabbaa;
-    margin: 3%;
-    font-size: xxx-large;
+    overflow: hidden;
+    background-color: #404040;
+    margin: 3% 30%;
+    border: solid 3px black;
+}
+
+img {
+    width: 200px;
+    height: 100px;
+    background-size: contain;
+    margin: 0;
 }
 
 button {
-    border: 0;
     cursor: pointer;
+    margin: 0;
+    border: 0;
     padding: 2% 6%;
     background: transparent url("png/start.png") center no-repeat;
     background-size: contain;
 }
 
 input {
-    border: 0;
     text-align: center;
+    margin: 0;
+    border: 0;
     padding: 2% 10%;
     background: transparent url("png/input.png") center no-repeat;
     background-size: contain;

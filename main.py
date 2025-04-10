@@ -37,16 +37,33 @@ with open("questions.yaml", "r") as f:
     except Exception as e:
         print(e)
 
+def validate(username: str, password: str) -> [str]:
+    if not username:
+        return ["Password is empty!"]
+    if not password:
+        return ["Password is empty!"]
+    arr = []
+    if len(username) > 20:
+        arr.append("Username should be shorter then 20 symbols!")
+    if len(username) < 5:
+        arr.append("Username should be longer then 5 symbols!")
+    if len(password) < 8:
+        arr.append("Password should be longer then 8 symbols!")
+    if not username.isalnum():
+        arr.append("Username should contain only letters and numbers")
+    return arr
+
+
 def make_jwt(nickname: str) -> str:
     return jwt.encode({
         "username": nickname,
-        "expires": time.time() + 3600,
+        "exp": time.time() + 3600,
     }, JWT_SECRET, algorithm=JWT_ALGORITHM)
 
-def get_username_from_token(token: str = Cookie(default=None)) -> str:
+def get_username_from_token(token: str = Cookie(default=None)) -> str | None:
     try:
         decoded_token = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
-        return decoded_token["username"] if decoded_token["expires"] >= time.time() else None
+        return decoded_token["username"] if decoded_token["exp"] >= time.time() else None
     except:
         return None
 
@@ -83,14 +100,17 @@ async def user_login(request: Request, username: str = Form(), password: str = F
 @app.post("/user-register")
 async def user_register(request: Request, username: str = Form(), password: str = Form()):
     if username in users:
-        return templates.TemplateResponse("register.html", {"request": request, "feedback": "User is already registered"})
+        return templates.TemplateResponse("register.html", {"request": request, "errors": ["User is already registered"]})
+    errors = validate(username, password)
+    if errors:
+        return templates.TemplateResponse("register.html", {"request": request, "errors": errors})
     users[username] = PASSWORD_CONTEXT.hash(password)
     with open("users.yaml", "a") as f:
         try:
             yaml.safe_dump({username: users[username]}, f, default_flow_style = False)
-            return templates.TemplateResponse("login.html", {"request": request, "feedback": "You are successfully registered!"})
-        except Exception as e:
-            return templates.TemplateResponse("login.html", {"request": request, "feedback": f"Site error: {e}"})
+            return templates.TemplateResponse("login.html", {"request": request, "errors": ["You are successfully registered!"]})
+        except:
+            return templates.TemplateResponse("login.html", {"request": request, "errors": ["Sorry, try again"]})
 
 @app.post("/type")
 async def type(
