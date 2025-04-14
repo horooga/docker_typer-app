@@ -5,7 +5,25 @@ services:
       - "8000:8000"
     depends_on:
       - mongodb
+
   mongodb:
-    image: mongo
+    image: mongo:latest
     ports:
       - "27017:27017"
+  
+  nginx:
+    image: nginx:latest
+    ports:
+      - "8080:80"
+      - "8443:443"
+    volumes:
+      - ./nginx/:/etc/nginx/:ro
+    depends_on:
+      - web
+
+  certbot:
+    image: certbot/certbot:latest
+    command: certonly -v --webroot --webroot-path=/var/certbot --force-renewal --agree-tos -d snusik.site
+    volumes:
+      - ./nginx/certbot/:/var/certbot/:rw
+
